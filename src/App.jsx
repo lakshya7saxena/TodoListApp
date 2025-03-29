@@ -18,12 +18,12 @@ function App() {
 
   const handleSave = () => {
     if (todo.length == 0) {
-      saveToLS()
       return;
     }
-    settodos([...todos, { key: uuidv4(), todo, isCompleted: false }])
+    let id = uuidv4()
+    settodos([...todos, { key: id, todo, isCompleted: false }])
     settodo("")
-    saveToLS()
+    localStorage.setItem("todos", JSON.stringify([...todos, { key: id, todo, isCompleted: false }]))
   }
   const handleEdit = (key) => {
     let idx = todos.findIndex((i) => {
@@ -36,7 +36,6 @@ function App() {
     }
     )
     settodos(newTodos)
-    saveToLS()
   }
   const handleDelete = (key) => {
     let ans = confirm("Are You Sure That You Want To Delete The Task?")
@@ -46,7 +45,7 @@ function App() {
       }
       )
       settodos(newTodos)
-      saveToLS()
+      localStorage.setItem("todos", JSON.stringify(newTodos))
     }
   }
   const handleChange = (e) => {
@@ -62,13 +61,8 @@ function App() {
     let newTodos = [...todos]
     newTodos[idx].isCompleted = !newTodos[idx].isCompleted
     settodos(newTodos)
-    saveToLS()
+    localStorage.setItem("todos", JSON.stringify(newTodos))
   }
-
-  const saveToLS = () => {
-    localStorage.setItem("todos", JSON.stringify(todos))
-  }
-
   const handleFinshed = (params) => {
     if (!showFinished) {
       document.querySelector("label").style.color = "red"
@@ -104,10 +98,10 @@ function App() {
                   <p className={item.isCompleted ? "font-semibold capitalize text-lg w-[95%] p-2 break-words line-through" : "font-semibold capitalize text-lg w-[95%] p-2 break-words"}>{item.todo}</p>
                 </div>
                 <div className="buttons w-[75px] flex justify-between items-center text-white font-bold">
-                  <button className='bg-[#af7eeb] p-1 pl-2 rounded-lg cursor-pointer transition-all hover:bg-violet-900' onClick={()=>handleEdit(item.key)}>
+                  <button className='bg-[#af7eeb] p-1 pl-2 rounded-lg cursor-pointer transition-all hover:bg-violet-900' onClick={() => handleEdit(item.key)}>
                     <FaEdit />
                   </button>
-                  <button className='bg-[#af7eeb] p-1 rounded-lg cursor-pointer transition-all hover:bg-violet-900' onClick={()=>handleDelete(item.key)}>
+                  <button className='bg-[#af7eeb] p-1 rounded-lg cursor-pointer transition-all hover:bg-violet-900' onClick={() => handleDelete(item.key)}>
                     <MdDelete />
                   </button>
                 </div>
